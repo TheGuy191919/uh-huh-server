@@ -15,14 +15,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author evan__000
  */
 @Controller
-@RequestMapping(value = "api/rooms")
+//@RequestMapping(value="api/rooms")
 public class RoomController {
     
-    @RequestMapping(value = "/{roomName}")
+    static {
+        System.out.println("hi, this is a static mathod");
+    }
+    
+    public RoomController(){
+        System.out.println("this hi, controler here");
+    }
+    
+    @RequestMapping(value="/api/rooms/{roomName}")
     public String messageRoom(@PathVariable String roomName, Model model){
-        System.out.print("Fuck" + roomName);
+        System.out.println("Fuck" + roomName);
         model.addAttribute("name", "thing");
         return "roomResponse";
     }
     
+    @RequestMapping(value = "*")
+    public String allThings(Model model){
+        System.out.println("FallBack Used");
+        return "roomResponse";
+    }
 }
