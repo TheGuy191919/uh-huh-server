@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author evan__000
  */
 @Controller
+@RequestMapping(value = "api/rooms")
 public class RoomController {
     
-    @RequestMapping(value = "/api/rooms/{roomName}")
+    @RequestMapping(value = "/{roomName}")
     public String messageRoom(@PathVariable String roomName, Model model){
         System.out.print("Fuck" + roomName);
         model.addAttribute("name", "thing");
