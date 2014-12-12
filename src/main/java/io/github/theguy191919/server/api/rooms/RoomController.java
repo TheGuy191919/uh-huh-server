@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -35,12 +36,13 @@ public class RoomController {
         return "index";
     }
     
-    @RequestMapping(value="/{roomName}/info")
+    @RequestMapping(value="/{roomName}/info", consumes="text/plain")
     @ResponseBody
-    public String roomInfo(@PathVariable String roomName, Model model){
+    public String roomInfo(@RequestBody byte[] body, @PathVariable String roomName, Model model){
         System.out.println("Fuck" + roomName);
+        System.out.println("The request body: " + new String(body));
         model.addAttribute("name", "thing");
-        return this.mapOfRooms.get(roomName).toString();
+        return "index";
     }
     
     @RequestMapping(value="/{roomName}/listen")
@@ -58,8 +60,8 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/regester", produces="text/plain")
     @ResponseBody
-    public String roomRegester(@PathVariable String roomName){
-        return "OK " + roomName;
+    public byte[] roomRegester(@PathVariable String roomName){
+        return new String("OK " + roomName).getBytes();
     }
     
     @RequestMapping(value = "/*")
