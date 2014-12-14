@@ -5,6 +5,7 @@
  */
 package io.github.theguy191919.server.api.rooms;
 
+import io.github.theguy191919.udpft.protocol.Protocol;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Controller;
@@ -36,13 +37,17 @@ public class RoomController {
         return "index";
     }
     
-    @RequestMapping(value="/{roomName}/info", consumes="text/plain")
+    @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
     @ResponseBody
-    public String roomInfo(@RequestBody byte[] body, @PathVariable String roomName, Model model){
+    public byte[] roomInfo(@RequestBody byte[] body, @PathVariable String roomName, Model model){
         System.out.println("Fuck" + roomName);
         System.out.println("The request body: " + new String(body));
+        System.out.println("The length of the message is: " + body.length);
+        for(int a = 0; a < body.length; a++){
+            System.out.println(a + ": " + body[a]);
+        }
         model.addAttribute("name", "thing");
-        return "index";
+        return body;
     }
     
     @RequestMapping(value="/{roomName}/listen")
