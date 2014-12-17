@@ -72,6 +72,6 @@ public class RoomController {
     @RequestMapping(value = "/*")
     public String allThings(Model model){
         //System.out.println("FallBack Used");
-        return "index";
+        return "all";
     }
 }
