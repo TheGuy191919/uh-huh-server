@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  *
@@ -52,8 +53,8 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
-    public String roomListen(@PathVariable String roomName){
-        return "";
+    public DeferredResult<byte[]> roomListen(@PathVariable String roomName){
+        return new DeferredResult<>();
     }
     
     @RequestMapping(value="/{roomName}/create")
