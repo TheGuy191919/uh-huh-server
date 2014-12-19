@@ -10,12 +10,12 @@
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
- 
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/api/rooms/*</url-pattern>
     </servlet-mapping>
-  
+    
     <session-config>
         <session-timeout>
             30

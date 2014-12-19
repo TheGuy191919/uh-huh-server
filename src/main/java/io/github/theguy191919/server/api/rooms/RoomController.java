@@ -6,8 +6,12 @@
 package io.github.theguy191919.server.api.rooms;
 
 import io.github.theguy191919.udpft.protocol.Protocol;
+import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +29,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 public class RoomController {
     
     private Map<String, ChatRoom> mapOfRooms;
+    private LinkedBlockingDeque<byte[]> que = new LinkedBlockingDeque();
 
     public RoomController() {
         this.mapOfRooms = new ConcurrentHashMap<>();
@@ -32,10 +37,9 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public String roomPost(@PathVariable String roomName, Model model){
-        System.out.println("Fuck" + roomName);
-        model.addAttribute("name", "thing");
-        return "index";
+    public String roomPost(@RequestBody byte[] body, @PathVariable String roomName, Model model){
+        this.que.add(body);
+        return "OK";
     }
     
     @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
@@ -53,8 +57,19 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
-    public DeferredResult<byte[]> roomListen(@PathVariable String roomName){
-        return new DeferredResult<>();
+    public DeferredResult<byte[]> roomListen(@RequestBody byte[] body, @PathVariable String roomName){
+        final DeferredResult result = new DeferredResult<>();
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    result.setResult(que.take());
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(RoomController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        return result;
     }
     
     @RequestMapping(value="/{roomName}/create")
