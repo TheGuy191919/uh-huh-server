@@ -75,7 +75,7 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/create")
     @ResponseBody
     public String roomCreate(@PathVariable String roomName){
-        this.mapOfRooms.put(roomName, new ChatRoom());
+        this.mapOfRooms.put(roomName, new ChatRoom(roomName));
         return "Created";
     }
     

@@ -7,6 +7,7 @@ package io.github.theguy191919.server.api.rooms;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  *
@@ -31,6 +32,10 @@ public class ChatRoom implements Runnable{
     
     public void stop(){
         
+    }
+    
+    public DeferredResult<byte[]> listen(DeferredResult<byte[]> ask){
+        return ask.setResult(this)
     }
 
     /**
