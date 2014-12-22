@@ -6,6 +6,7 @@
 package io.github.theguy191919.server.api.rooms;
 
 import io.github.theguy191919.udpft.protocol.Protocol;
+import io.github.theguy191919.udpft.protocol.Protocol4;
 import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +29,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 //@RequestMapping(value="api/rooms")
 public class RoomController {
     
-    private Map<String, ChatRoom> mapOfRooms;
+    private Map<Integer, ChatRoom> mapOfRooms;
     private LinkedBlockingDeque<byte[]> que = new LinkedBlockingDeque();
 
     public RoomController() {
@@ -38,7 +39,9 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
     public String roomPost(@RequestBody byte[] body, @PathVariable String roomName, Model model){
-        this.que.add(body);
+        
+        this.mapOfRooms.get(roomName.hashCode()).post(body);
+        //this.que.add(body);
         return "OK";
     }
     
@@ -58,24 +61,22 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
     public DeferredResult<byte[]> roomListen(@RequestBody byte[] body, @PathVariable String roomName){
-        final DeferredResult result = new DeferredResult<>();
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    result.setResult(que.take());
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(RoomController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
+        DeferredResult result = new DeferredResult<>();
+        if(this.mapOfRooms.containsKey(roomName.hashCode())){
+            this.mapOfRooms.get(roomName.hashCode()).listen(result);
+        } else {
+            Protocol error = new Protocol4();
+            error.setContent("No room found");
+            result.setResult(error.returnByteArray());
+        }
         return result;
     }
     
     @RequestMapping(value="/{roomName}/create")
     @ResponseBody
     public String roomCreate(@PathVariable String roomName){
-        this.mapOfRooms.put(roomName, new ChatRoom(roomName));
+        ChatRoom room = new ChatRoom(roomName);
+        this.mapOfRooms.put(room.getNameHash(), room);
         return "Created";
     }
     

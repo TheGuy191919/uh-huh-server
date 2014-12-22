@@ -7,6 +7,9 @@ package io.github.theguy191919.server.api.rooms;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
@@ -15,27 +18,53 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 public class ChatRoom implements Runnable{
     private int nameHash = (int)(Math.random() * 10000);
-    private List<>
+    private LinkedBlockingDeque<DeferredResult<byte[]>> listener = new LinkedBlockingDeque<>();
+    private LinkedBlockingDeque<byte[]> messages = new LinkedBlockingDeque<>();
+    private Thread thread;
 
     public ChatRoom(String name){
         this.nameHash = name.hashCode();
     }
     
     public void start(){
-        
+        thread = new Thread(this, "Room-" + this.nameHash);
+    }
+    
+    public void post(byte[] message){
+        this.messages.add(message);
     }
     
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while(!this.messages.isEmpty()){
+            try {
+                byte[] message = this.messages.take();
+                while(!this.listener.isEmpty()){
+                    try {
+                        this.listener.take().setResult(message);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        this.stop();
     }
     
     public void stop(){
-        
+        thread.interrupt();
+        thread = null;
     }
     
-    public DeferredResult<byte[]> listen(DeferredResult<byte[]> ask){
-        return ask.setResult(this)
+    public void listen(DeferredResult<byte[]> deferred){
+        this.listener.add(deferred);
     }
 
     /**
