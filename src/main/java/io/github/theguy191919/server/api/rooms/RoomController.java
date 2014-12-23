@@ -6,6 +6,7 @@
 package io.github.theguy191919.server.api.rooms;
 
 import io.github.theguy191919.udpft.protocol.Protocol;
+import io.github.theguy191919.udpft.protocol.Protocol3;
 import io.github.theguy191919.udpft.protocol.Protocol4;
 import java.util.AbstractQueue;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,11 +40,16 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public String roomPost(@RequestBody byte[] body, @PathVariable String roomName, Model model){
-        
-        this.mapOfRooms.get(roomName.hashCode()).post(body);
+    public byte[] roomPost(@RequestBody byte[] body, @PathVariable String roomName, Model model){
+        if(this.mapOfRooms.containsKey(roomName.hashCode())){
+            this.mapOfRooms.get(roomName.hashCode()).post(body);
+        } else {
+            Protocol error = new Protocol4();
+            error.setContent("No room found");
+            return error.returnByteArray();
+        }
+        return new Protocol3().returnByteArray();
         //this.que.add(body);
-        return "OK";
     }
     
     @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
@@ -61,7 +68,7 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
     public DeferredResult<byte[]> roomListen(@RequestBody byte[] body, @PathVariable String roomName){
-        DeferredResult result = new DeferredResult<>();
+        final DeferredResult<byte[]> result = new DeferredResult<>();
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).listen(result);
         } else {
@@ -80,7 +87,7 @@ public class RoomController {
         return "Created";
     }
     
-    @RequestMapping(value="/{roomName}/regester", produces="text/plain")
+    @RequestMapping(value="/{roomName}/regester")//, produces="text/plain")
     @ResponseBody
     public byte[] roomRegester(@PathVariable String roomName){
         return new String("OK " + roomName).getBytes();

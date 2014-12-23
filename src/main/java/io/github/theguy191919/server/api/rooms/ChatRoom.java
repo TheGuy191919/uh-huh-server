@@ -21,17 +21,22 @@ public class ChatRoom implements Runnable{
     private LinkedBlockingDeque<DeferredResult<byte[]>> listener = new LinkedBlockingDeque<>();
     private LinkedBlockingDeque<byte[]> messages = new LinkedBlockingDeque<>();
     private Thread thread;
+    private boolean running;
 
     public ChatRoom(String name){
         this.nameHash = name.hashCode();
     }
     
     public void start(){
-        thread = new Thread(this, "Room-" + this.nameHash);
+        if(!running){
+            thread = null;
+            thread = new Thread(this, "Room-" + this.nameHash);
+        }
     }
     
     public void post(byte[] message){
         this.messages.add(message);
+        this.start();
     }
     
     @Override
@@ -50,7 +55,7 @@ public class ChatRoom implements Runnable{
                 Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -59,6 +64,7 @@ public class ChatRoom implements Runnable{
     }
     
     public void stop(){
+        running = false;
         thread.interrupt();
         thread = null;
     }
