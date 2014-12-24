@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  *
  * @author evan__000
  */
+@Service
 public class ChatRoom implements Runnable{
     private int nameHash = (int)(Math.random() * 10000);
     private LinkedBlockingDeque<DeferredResult<byte[]>> listener = new LinkedBlockingDeque<>();
