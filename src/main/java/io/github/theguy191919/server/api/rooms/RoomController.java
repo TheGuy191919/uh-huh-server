@@ -5,6 +5,7 @@
  */
 package io.github.theguy191919.server.api.rooms;
 
+import io.github.theguy191919.udpft.encryption.SimpleCrypto;
 import io.github.theguy191919.udpft.protocol.Protocol;
 import io.github.theguy191919.udpft.protocol.Protocol3;
 import io.github.theguy191919.udpft.protocol.Protocol4;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -40,9 +42,9 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public byte[] roomPost(@RequestBody byte[] body, @PathVariable String roomName, Model model){
+    public byte[] roomPost(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).post(body);
+            this.mapOfRooms.get(roomName.hashCode()).post(data.getBytes());
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
@@ -54,21 +56,19 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
     @ResponseBody
-    public byte[] roomInfo(@RequestBody byte[] body, @PathVariable String roomName, Model model){
-        System.out.println("Fuck" + roomName);
-        System.out.println("The request body: " + new String(body));
-        System.out.println("The length of the message is: " + body.length);
-        for(int a = 0; a < body.length; a++){
-            System.out.println(a + ": " + body[a]);
-        }
+    public byte[] roomInfo(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName, Model model){
+        System.out.println("Fuck " + roomName);
+        System.out.println("The request body: " + data);
+        System.out.println("The length of the message is: " + data);
+        System.out.println("Message is: " + new SimpleCrypto(roomName.hashCode()).decrypt(data));
         model.addAttribute("name", "thing");
-        return body;
+        return data.getBytes();
     }
     
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
-    public DeferredResult<byte[]> roomListen(@RequestBody byte[] body, @PathVariable String roomName){
-        final DeferredResult<byte[]> result = new DeferredResult<>();
+    public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @PathVariable String roomName){
+        final DeferredResult<byte[]> result = new DeferredResult<>((long)10000, "hi".getBytes());
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).listen(result);
         } else {

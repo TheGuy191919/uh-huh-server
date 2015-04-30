@@ -17,7 +17,7 @@ import org.springframework.web.context.request.async.DeferredResult;
  *
  * @author evan__000
  */
-@Service
+//@Service
 public class ChatRoom implements Runnable{
     private int nameHash = (int)(Math.random() * 10000);
     private LinkedBlockingDeque<DeferredResult<byte[]>> listener = new LinkedBlockingDeque<>();
@@ -25,6 +25,10 @@ public class ChatRoom implements Runnable{
     private Thread thread;
     private boolean running;
 
+    public ChatRoom(){
+        
+    }
+    
     public ChatRoom(String name){
         this.nameHash = name.hashCode();
     }
@@ -73,6 +77,10 @@ public class ChatRoom implements Runnable{
     
     public void listen(DeferredResult<byte[]> deferred){
         this.listener.add(deferred);
+    }
+    
+    public void setName(String name){
+        this.nameHash = name.hashCode();
     }
 
     /**

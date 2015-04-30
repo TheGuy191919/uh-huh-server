@@ -31,14 +31,14 @@
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-core</artifactId>
-		<version>4.1.2.RELEASE</version>
+		<version>4.1.6.RELEASE</version>
 	</dependency>
  
         <!-- Spring MVC framework --> 
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-webmvc</artifactId>
-		<version>4.1.2.RELEASE</version>
+		<version>4.1.6.RELEASE</version>
 	</dependency>
  
 	<!-- JSTL --> 
