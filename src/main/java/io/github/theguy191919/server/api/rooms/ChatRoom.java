@@ -26,22 +26,27 @@ public class ChatRoom implements Runnable{
     private boolean running;
 
     public ChatRoom(){
-        
+        this.nameHash = this.hashCode();
     }
     
     public ChatRoom(String name){
         this.nameHash = name.hashCode();
+        System.out.println("Created room" + name);
     }
     
     public void start(){
         if(!running){
+            System.out.println("Starting server");
+            running = true;
             thread = null;
             thread = new Thread(this, "Room-" + this.nameHash);
+            thread.start();
         }
     }
     
     public void post(byte[] message){
         this.messages.add(message);
+        System.out.println("Posing message");
         this.start();
     }
     
@@ -49,10 +54,15 @@ public class ChatRoom implements Runnable{
     public void run() {
         while(!this.messages.isEmpty()){
             try {
+                System.out.println("while Message");
                 byte[] message = this.messages.take();
                 while(!this.listener.isEmpty()){
+                    System.out.println("While listener");
                     try {
-                        this.listener.take().setResult(message);
+                        DeferredResult<byte[]> listener = this.listener.take();
+                        if(!listener.isSetOrExpired()){
+                            listener.setResult(message);
+                        }
                     } catch (InterruptedException ex) {
                         Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -70,12 +80,14 @@ public class ChatRoom implements Runnable{
     }
     
     public void stop(){
+        System.out.println("stopping");
         running = false;
         thread.interrupt();
         thread = null;
     }
     
     public void listen(DeferredResult<byte[]> deferred){
+        System.out.println("Listening");
         this.listener.add(deferred);
     }
     
