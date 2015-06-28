@@ -21,10 +21,36 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 //@Service
 public class ChatRoom implements Runnable{
+    
+    private final int nameHash;
+    private List<User> listOfUsers;
+    private List<Message> listOfMessages;
+    
+    public ChatRoom(String name){
+        this.nameHash = name.hashCode();
+        this.listOfUsers = new LinkedList<>();
+        this.start();
+    }
+    
+    public void addUser(String name){
+        this.listOfUsers.add(new User(name));
+    }
+    
+    public void addMessage(byte[] message){
+        this.listOfMessages.add(new Message(message));
+    }
+    
+    public void start(){
+        
+    }
 
     @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void stop(){
+        
     }
 //    private int nameHash = (int)(Math.random() * 10000);
 //    //private LinkedBlockingDeque<DeferredResult<byte[]>> listener = new LinkedBlockingDeque<>();
