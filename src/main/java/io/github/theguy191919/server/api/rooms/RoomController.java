@@ -42,9 +42,9 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public byte[] roomPost(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName, Model model){
+    public byte[] roomPost(@RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).post(data.getBytes());
+            this.mapOfRooms.get(roomName.hashCode()).post(new Message(data.getBytes()));
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
@@ -67,10 +67,10 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
-    public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @PathVariable String roomName){
-        final DeferredResult<byte[]> result = new DeferredResult<>((long)10000, "hi".getBytes());
+    public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName){
+        final DeferredResult<byte[]> result = new DeferredResult<>((long)60000, "hi".getBytes());
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).listen(result);
+            this.mapOfRooms.get(roomName.hashCode()).listen(username, result); //be replaced with decodeed protocol username
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
