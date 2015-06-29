@@ -31,6 +31,15 @@ public class User {
         //System.out.println("User " + name + "made");
     }
     
+    public User(String name, DeferredResult<byte[]> request){
+        this.name = name;
+        this.request = request;
+        Message firstMessage = new Message(new Protocol2().returnByteArray());
+        this.lastMessage = firstMessage;
+        this.newMessage(firstMessage);
+        //System.out.println("User " + name + "made");
+    }
+    
     @Override
     public String toString(){
         return "User: " + name;
@@ -41,6 +50,7 @@ public class User {
     */
     public void newMessage(Message message){
         this.messageQue.add(message);
+        this.lastMessage = message;
         //if(!request.isSetOrExpired() && !this.messageQue.isEmpty()){
             this.setResponse();
 //            Message message = this.messageQue.poll().getMessage();
@@ -64,15 +74,16 @@ public class User {
         //}
     }
     
-    private synchronized void setResponse(){
-        if(!this.messageQue.isEmpty() && !this.request.isSetOrExpired()){
-            Message message = this.messageQue.poll();
-            this.request.setResult(message.getMessage());
-            this.lastMessage = message;
+    private synchronized void setResponse() {
+        if (this.request != null) {
+            if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
+                Message message = this.messageQue.poll();
+                this.request.setResult(message.getMessage());
+                //this.lastMessage = message;
+            }
         }
-        
     }
-    
+
     public Message getLastMessage(){
         return this.lastMessage;
     }

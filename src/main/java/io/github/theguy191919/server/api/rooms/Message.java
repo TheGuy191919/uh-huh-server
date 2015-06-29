@@ -23,7 +23,7 @@ public class Message implements Comparable{
     public Message(byte[] message, long timeStemp){
         this.message = message;
         this.timeStemp = timeStemp;
-        System.out.println("New Message");
+        //System.out.println("New Message");
     }
 
     /**

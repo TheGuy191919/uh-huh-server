@@ -34,7 +34,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 public class RoomController {
     
     private Map<Integer, ChatRoom> mapOfRooms;
-    private LinkedBlockingDeque<byte[]> que = new LinkedBlockingDeque();
+    //private LinkedBlockingDeque<byte[]> que = new LinkedBlockingDeque();
 
     public RoomController() {
         this.mapOfRooms = new ConcurrentHashMap<>();
@@ -44,7 +44,7 @@ public class RoomController {
     @ResponseBody
     public byte[] roomPost(@RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).post(new Message(data.getBytes()));
+            this.mapOfRooms.get(roomName.hashCode()).addMessage(data.getBytes());
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
@@ -70,7 +70,7 @@ public class RoomController {
     public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName){
         final DeferredResult<byte[]> result = new DeferredResult<>((long)60000, "hi".getBytes());
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).listen(username, result); //be replaced with decodeed protocol username
+            this.mapOfRooms.get(roomName.hashCode()).addRequest(username, result); //be replaced with decodeed protocol username
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
