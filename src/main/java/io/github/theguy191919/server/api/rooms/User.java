@@ -65,6 +65,7 @@ public class User {
     Called by either controller or main thread to add to the request pool
     */
     public void newRequest(DeferredResult<byte[]> request){
+        System.out.println("New Request");
         this.request = request;
         this.setResponse();
         //if(!this.messageQue.isEmpty()){
@@ -74,8 +75,10 @@ public class User {
         //}
     }
     
-    private synchronized void setResponse() {
+    private void setResponse() {
+        System.out.println("Attempting to Message");
         if (this.request != null) {
+            System.out.println("Request is not null");
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
                 Message message = this.messageQue.poll();
                 this.request.setResult(message.getMessage());

@@ -68,7 +68,7 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
     public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName){
-        final DeferredResult<byte[]> result = new DeferredResult<>((long)60000, "hi".getBytes());
+        final DeferredResult<byte[]> result = new DeferredResult<>((long)60000, "No message sent in last 60 seconds".getBytes());
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).addRequest(username, result); //be replaced with decodeed protocol username
         } else {

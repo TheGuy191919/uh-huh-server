@@ -1,10 +1,51 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Start Page</title>
+        <title>Testing</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <table id="chat">
+            <tr>
+                <td>Time</td>
+                <td>Message</td>
+            </tr>
+        </table>
+        <script>
+            function createRow(time, message) {
+                var table = document.getElementById("chat");
+                var row = table.insertRow(table.rows.length);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                cell1.innerHTML = time;
+                cell2.innerHTML = message;
+            }
+
+            function deleteRow() {
+                document.getElementById("chat").deleteRow(0);
+            }
+
+            function httpGet(theUrl) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", theUrl, false);
+                xmlHttp.send(null);
+                return xmlHttp.responseText;
+            }
+            
+            var dots = 0;
+            httpGet("http://localhost:8080/uh-huh-server/api/rooms/test/create");
+            while (true) {
+                var message = httpGet("http://localhost:8080/uh-huh-server/api/rooms/test/listen?username=TheGuy");
+                if (message && message !== "") {
+                    createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), message);
+                }
+                var title = "Testing";
+                for(a = 0; a < dots; a++){
+                    title = title + ".";
+                }
+                document.title = title;
+                console.log("Requested");
+            }
+        </script>
     </body>
 </html>

@@ -31,12 +31,13 @@ public class ChatRoom implements Runnable{
     
     public ChatRoom(String name){
         this.nameHash = name.hashCode();
-        this.listOfUsers = new CopyOnWriteArrayList<>();
-        this.listOfMessages = new CopyOnWriteArrayList<>();
+        this.listOfUsers = new LinkedList<>();
+        this.listOfMessages = new LinkedList<>();
         this.start();
     }
     
-    public void addUser(String name){
+    private void addUser(String name){
+        System.out.println("New User " + name + " added");
         this.listOfUsers.add(new User(name));
     }
     
@@ -45,15 +46,20 @@ public class ChatRoom implements Runnable{
     }
     
     public void addRequest(String userName, DeferredResult<byte[]> request){
+        System.out.println("New Request by " + userName);
         boolean foundUser = false;
         for(int a = 0; a < this.listOfUsers.size(); a++){
-            if(this.listOfUsers.get(a).getName() == userName){
+            if(this.listOfUsers.get(a).getName().equals(userName)){
                 this.listOfUsers.get(a).newRequest(request);
                 foundUser = true;
+                System.out.println("User Found");
             }
         }
         if(foundUser == false){
-            this.listOfUsers.add(new User(userName));
+            System.out.println("User not found... Creating new User");
+            User user = new User(userName);
+            user.newRequest(request);
+            this.listOfUsers.add(user);
         }
     }
     
@@ -68,15 +74,17 @@ public class ChatRoom implements Runnable{
         while(running){
             for(int a = 0; a < this.listOfUsers.size(); a++){
                 User user = this.listOfUsers.get(a);
+                System.out.println("User " + user.getName() + " updating");
                 for(int b =0; b < this.listOfMessages.size(); b++){
                     Message message = this.listOfMessages.get(b);
                     if(message.compareTo(user.getLastMessage()) > 0){
+                        System.out.println("Adding new Message to user Que");
                         user.newMessage(message);
                     }
                 }
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
             }
