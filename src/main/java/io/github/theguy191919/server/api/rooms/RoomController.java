@@ -57,6 +57,7 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
     @ResponseBody
     public byte[] roomInfo(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName, Model model){
+        //saved for future api
         System.out.println("Fuck " + roomName);
         System.out.println("The request body: " + data);
         System.out.println("The length of the message is: " + data);
@@ -72,9 +73,9 @@ public class RoomController {
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).addRequest(username, result); //be replaced with decodeed protocol username
         } else {
-            Protocol error = new Protocol4();
-            error.setContent("No room found");
-            result.setResult(error.returnByteArray());
+            ChatRoom room = new ChatRoom(roomName.hashCode());
+            this.mapOfRooms.put(room.getNameHash(), room);
+            this.mapOfRooms.get(roomName.hashCode()).addRequest(username, result);
         }
         return result;
     }
@@ -82,7 +83,8 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/create")
     @ResponseBody
     public String roomCreate(@PathVariable String roomName){
-        ChatRoom room = new ChatRoom(roomName);
+        //unneeded
+        ChatRoom room = new ChatRoom(roomName.hashCode());
         this.mapOfRooms.put(room.getNameHash(), room);
         return "Created";
     }
@@ -90,11 +92,13 @@ public class RoomController {
     @RequestMapping(value="/{roomName}/regester")//, produces="text/plain")
     @ResponseBody
     public byte[] roomRegester(@PathVariable String roomName){
+        //unneeded
         return new String("OK " + roomName).getBytes();
     }
     
     @RequestMapping(value = "/*")
     public String allThings(Model model){
+        //unneeded
         //System.out.println("FallBack Used");
         return "all";
     }

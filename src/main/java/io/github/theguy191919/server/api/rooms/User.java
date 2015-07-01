@@ -51,14 +51,6 @@ public class User {
     public void newMessage(Message message){
         this.messageQue.add(message);
         this.lastMessage = message;
-        //if(!request.isSetOrExpired() && !this.messageQue.isEmpty()){
-            this.setResponse();
-//            Message message = this.messageQue.poll().getMessage();
-//            request.setResult(message);
-//            this.lastMessageTime = message.getTimeStemp();
-//        } else {
-//            
-        //}
     }
     
     /*
@@ -68,17 +60,12 @@ public class User {
         System.out.println("New Request");
         this.request = request;
         this.setResponse();
-        //if(!this.messageQue.isEmpty()){
-            //Message message = this.messageQue.poll();
-            //this.request.setResult(message.getMessage());
-            //this.lastMessageTime = message.getTimeStemp();
-        //}
     }
     
     private void setResponse() {
         System.out.println("Attempting to Message");
         if (this.request != null) {
-            System.out.println("Request is not null");
+            //System.out.println("Request is not null");
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
                 Message message = this.messageQue.poll();
                 this.request.setResult(message.getMessage());
