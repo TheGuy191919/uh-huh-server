@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 
+//var roomName;// = "test";
+//var username;// = "RadomUser" + Math.random();
+
 function createRow(time, message) {
     var table = document.getElementById("chat");
     var row = table.insertRow(table.rows.length);
@@ -27,7 +30,7 @@ function httpGet(theUrl, loadFunc, errFunc) {
 }
 
 function listen(){
-    httpGet("http://localhost:8080/uh-huh-server/api/rooms/test/listen?username=TheGuy&random=" + Math.random(), function load() {
+    httpGet("./listen?username=" + username + "&random=" + Math.random(), function load() {
     var message = this.responseText;
     console.log(message);
     if (message && message !== "") {
@@ -42,6 +45,14 @@ function listen(){
     }
     listen();
 });
+}
+
+function post(message){
+    httpGet("./post?username=" + username + "&data=" + username + ": " + message + "&random=" + Math.random(), function load(){
+        console.log("Posted " + message);
+    }, function error(){
+        createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), "\"" + message + "\" failed to send");
+    });
 }
 
 var dots = 0;

@@ -5,7 +5,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <a href="./Rooms/RoomManager.jsp">Click Here to go to Manager UI</a>
+        <h1>Welcome to Uh Huh</h1>
+        <p>Please enter the room name you wish to enter</p>
+        <form>
+            Room Name: <input id="roomName" type="text" name="name" required>
+            <br>
+            User Name: <input id="username" type="text" name="user" required>
+            <input type="button" value="OK" onclick="gotoRoom()">
+        </form>
+        <script>
+            function gotoRoom(){
+                var roomName = document.getElementById("roomName").value;
+                var username = document.getElementById("username").value;
+                window.location.href = "./api/rooms/" + roomName + "/manager?username=" + username;
+            }
+        </script>
     </body>
-        
 </html>

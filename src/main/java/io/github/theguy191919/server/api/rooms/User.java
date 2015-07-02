@@ -51,6 +51,7 @@ public class User {
     public void newMessage(Message message){
         this.messageQue.add(message);
         this.lastMessage = message;
+        this.setResponse();
     }
     
     /*

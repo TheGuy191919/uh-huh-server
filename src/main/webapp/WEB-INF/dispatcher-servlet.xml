@@ -22,7 +22,7 @@
             <value>/</value>
         </property>
         <property name="suffix">
-            <value>.html</value>
+            <value>.jsp</value>
         </property>
     </bean>
     

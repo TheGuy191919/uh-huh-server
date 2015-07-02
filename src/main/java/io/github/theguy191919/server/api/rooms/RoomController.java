@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,6 +95,14 @@ public class RoomController {
     public byte[] roomRegester(@PathVariable String roomName){
         //unneeded
         return new String("OK " + roomName).getBytes();
+    }
+    
+    @RequestMapping(value="/{roomName}/manager")
+    public String roomManager(@RequestParam(value = "username", required = false) String username, @PathVariable String roomName, ModelMap model){
+        
+        model.addAttribute("roomName", roomName);
+        model.addAttribute("username", username);
+        return "./Rooms/RoomManager";
     }
     
     @RequestMapping(value = "/*")
