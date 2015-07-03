@@ -99,7 +99,9 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/manager")
     public String roomManager(@RequestParam(value = "username", required = false) String username, @PathVariable String roomName, ModelMap model){
-        
+        if(username == null){
+            username = "RamdomUser" + (int)(Math.random() * 10000);
+        }
         model.addAttribute("roomName", roomName);
         model.addAttribute("username", username);
         return "./Rooms/RoomManager";

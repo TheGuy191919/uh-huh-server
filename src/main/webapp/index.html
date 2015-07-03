@@ -8,9 +8,9 @@
         <h1>Welcome to Uh Huh</h1>
         <p>Please enter the room name you wish to enter</p>
         <form>
-            Room Name: <input id="roomName" type="text" name="name" required>
+            Room Name: <input id="roomName" type="text" name="name" onkeyup="return false" required>
             <br>
-            User Name: <input id="username" type="text" name="user" required>
+            User Name: <input id="username" type="text" name="user" onkeyup="onKeyPress(event)" required>
             <input type="button" value="OK" onclick="gotoRoom()">
         </form>
         <script>
@@ -18,6 +18,15 @@
                 var roomName = document.getElementById("roomName").value;
                 var username = document.getElementById("username").value;
                 window.location.href = "./api/rooms/" + roomName + "/manager?username=" + username;
+            }
+            function onKeyPress(event){
+                        console.log("Key pressed:" + event.keyCode);
+                        if(event.keyCode == 13){
+                            console.log("Enter Pressed");
+                            gotoRoom();
+                            return false;
+                        }
+                        return true;
             }
         </script>
     </body>

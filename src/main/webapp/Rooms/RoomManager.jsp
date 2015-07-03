@@ -15,10 +15,11 @@
             var username = "${username}";
         </script>
         <script src="../../../Rooms/webScript.js" async></script>
+        <link rel="stylesheet" href="../../../Rooms/roomStyle.css">
     </head>
     <body>
-        <div>
-            <div style="overflow-y: auto">
+        <div id="leftDiv">
+            <div id="chatDiv">
                 <h1>Welcome to room ${roomName}</h1>
                 <hr>
                 <table id="chat">
@@ -28,20 +29,29 @@
                     </tr>
                 </table>
             </div>
-            <div>
-                <form>
-                    <input id="messageBox" type="text" placeholder="Enter Message Here" width="90%" required>
+            <div id="submitDiv">
+                <input id="messageBox" type="text" placeholder="Enter Message Here" width="90%" onkeyup="onKeyPress(event)" required>
                     <input type="button" value="Send" width="10%" onclick="post(getMessage())">
-                </form>
             </div>
         </div>
-                <div>
+                <div id="rightDev">
                     
                 </div>
                 
                 <script>
                     function getMessage(){
-                        return document.getElementById("messageBox").value;
+                        var message = document.getElementById("messageBox").value;
+                        document.getElementById("messageBox").value = "";
+                        return message;
+                    }
+                    function onKeyPress(event){
+                        console.log("Key pressed:" + event.keyCode);
+                        if(event.keyCode == 13){
+                            console.log("Enter Pressed");
+                            post(getMessage());
+                            return false;
+                        }
+                        return true;
                     }
                 </script>
     </body>

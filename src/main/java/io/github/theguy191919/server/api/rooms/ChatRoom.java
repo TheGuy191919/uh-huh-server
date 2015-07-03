@@ -85,7 +85,7 @@ public class ChatRoom implements Runnable{
                 }
             }
             try {
-                Thread.sleep(2000);
+                Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
             }
