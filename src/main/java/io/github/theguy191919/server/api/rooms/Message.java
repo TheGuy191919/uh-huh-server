@@ -13,15 +13,18 @@ import java.util.TimeZone;
  * @author evan__000
  */
 public class Message implements Comparable{
+    
     private long timeStemp;
     private byte[] message;
+    private String sender;
     
-    public Message(byte[] message){
-        this(message, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
+    public Message(byte[] message, String sender){
+        this(message, sender, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
     }
     
-    public Message(byte[] message, long timeStemp){
+    public Message(byte[] message, String sender, long timeStemp){
         this.message = message;
+        this.sender = sender;
         this.timeStemp = timeStemp;
         //System.out.println("New Message");
     }
@@ -38,6 +41,10 @@ public class Message implements Comparable{
      */
     public byte[] getMessage() {
         return message;
+    }
+    
+    public String getSender(){
+        return this.sender;
     }
     
     @Override

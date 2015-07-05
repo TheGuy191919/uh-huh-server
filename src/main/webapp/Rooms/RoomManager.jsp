@@ -45,10 +45,12 @@
                         return message;
                     }
                     function onKeyPress(event){
-                        console.log("Key pressed:" + event.keyCode);
+                        //console.log("Key pressed:" + event.keyCode);
                         if(event.keyCode == 13){
-                            console.log("Enter Pressed");
-                            post(getMessage());
+                            //console.log("Enter Pressed");
+                            var message = getMessage();
+                            post(message);
+                            createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), username + ": " + message);
                             return false;
                         }
                         return true;

@@ -25,19 +25,15 @@ public class User {
     
     public User(String name){
         this.name = name;
-        Message firstMessage = new Message(new Protocol2().returnByteArray());
+        Message firstMessage = new Message(new Protocol2().returnByteArray(), "Server");
         this.lastMessage = firstMessage;
         this.newMessage(firstMessage);
         //System.out.println("User " + name + "made");
     }
     
     public User(String name, DeferredResult<byte[]> request){
-        this.name = name;
+        this(name);
         this.request = request;
-        Message firstMessage = new Message(new Protocol2().returnByteArray());
-        this.lastMessage = firstMessage;
-        this.newMessage(firstMessage);
-        //System.out.println("User " + name + "made");
     }
     
     @Override
@@ -69,7 +65,9 @@ public class User {
             //System.out.println("Request is not null");
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
                 Message message = this.messageQue.poll();
-                this.request.setResult(message.getMessage());
+                if(!message.getSender().equals(this.name)){
+                    this.request.setResult(message.getMessage());
+                }
                 //this.lastMessage = message;
             }
         }

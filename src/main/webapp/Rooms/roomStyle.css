@@ -22,6 +22,7 @@ and open the template in the editor.
     top: 0px;
     right: 0px;
     width: 100%;
+    overflow: scroll;
 }
 
 #submitDiv{

@@ -42,8 +42,8 @@ public class ChatRoom implements Runnable{
         this.listOfUsers.add(new User(name));
     }
     
-    public void addMessage(byte[] message){
-        this.listOfMessages.add(new Message(message));
+    public void addMessage(String sender, byte[] message){
+        this.listOfMessages.add(new Message(message, sender));
     }
     
     public void addRequest(String userName, DeferredResult<byte[]> request){
@@ -85,7 +85,7 @@ public class ChatRoom implements Runnable{
                 }
             }
             try {
-                Thread.sleep(200);
+                Thread.sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
             }

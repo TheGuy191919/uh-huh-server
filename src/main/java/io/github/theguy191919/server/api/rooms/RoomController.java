@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PreDestroy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,9 +44,9 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public byte[] roomPost(@RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
+    public byte[] roomPost(@RequestParam(value = "goal", required = false) String goal, @RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).addMessage(data.getBytes());
+            this.mapOfRooms.get(roomName.hashCode()).addMessage(username, data.getBytes());
         } else {
             Protocol error = new Protocol4();
             error.setContent("No room found");
@@ -112,5 +113,12 @@ public class RoomController {
         //unneeded
         //System.out.println("FallBack Used");
         return "all";
+    }
+    
+    @PreDestroy
+    public void stop(){
+        for(int a = 0; a < this.mapOfRooms.size(); a++){
+            this.mapOfRooms.get(a).stop();
+        }
     }
 }
