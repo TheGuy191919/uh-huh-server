@@ -38,7 +38,7 @@ public class ChatRoom implements Runnable{
     }
     
     private void addUser(String name){
-        System.out.println("New User " + name + " added");
+        //System.out.println("New User " + name + " added");
         this.listOfUsers.add(new User(name));
     }
     
@@ -53,11 +53,11 @@ public class ChatRoom implements Runnable{
             if(this.listOfUsers.get(a).getName().equals(userName)){
                 this.listOfUsers.get(a).newRequest(request);
                 foundUser = true;
-                System.out.println("User Found");
+                //System.out.println("User Found");
             }
         }
         if(foundUser == false){
-            System.out.println("User not found... Creating new User");
+            //System.out.println("User not found... Creating new User");
             User user = new User(userName);
             user.newRequest(request);
             this.listOfUsers.add(user);
@@ -79,7 +79,7 @@ public class ChatRoom implements Runnable{
                 for(int b =0; b < this.listOfMessages.size(); b++){
                     Message message = this.listOfMessages.get(b);
                     if(message.compareTo(user.getLastMessage()) > 0){
-                        System.out.println("Adding new Message to user Que");
+                        //System.out.println("Adding new Message to user Que");
                         user.newMessage(message);
                     }
                 }

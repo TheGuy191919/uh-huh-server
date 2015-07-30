@@ -5,6 +5,7 @@
  */
 package io.github.theguy191919.server.api.rooms;
 
+import io.github.theguy191919.udpft2.protocol.Protocol;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -50,6 +51,10 @@ public class Message implements Comparable{
     @Override
     public String toString(){
         return this.timeStemp + "|" + this.message;
+    }
+    
+    public Protocol getProtocol(){
+        return new Protocol(this.sender);
     }
 
     @Override

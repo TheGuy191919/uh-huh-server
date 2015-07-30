@@ -5,7 +5,9 @@
  */
 package io.github.theguy191919.server.api.rooms;
 
-import io.github.theguy191919.udpft.protocol.Protocol2;
+//import io.github.theguy191919.udpft.protocol.Protocol2;
+import io.github.theguy191919.udpft2.protocol.Protocol;
+import io.github.theguy191919.udpft2.protocol.ProtocolGoal;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -25,7 +27,7 @@ public class User {
     
     public User(String name){
         this.name = name;
-        Message firstMessage = new Message(new Protocol2().returnByteArray(), "Server");
+        Message firstMessage = new Message(new Protocol("Server", ProtocolGoal.POST, "").toString().getBytes(), "Server");
         this.lastMessage = firstMessage;
         this.newMessage(firstMessage);
         //System.out.println("User " + name + "made");
@@ -54,13 +56,13 @@ public class User {
     Called by either controller or main thread to add to the request pool
     */
     public void newRequest(DeferredResult<byte[]> request){
-        System.out.println("New Request");
+        //System.out.println("New Request");
         this.request = request;
         this.setResponse();
     }
     
     private void setResponse() {
-        System.out.println("Attempting to Message");
+        //System.out.println("Attempting to Message");
         if (this.request != null) {
             //System.out.println("Request is not null");
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {

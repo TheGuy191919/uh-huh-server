@@ -6,9 +6,11 @@
 package io.github.theguy191919.server.api.rooms;
 
 import io.github.theguy191919.udpft.encryption.SimpleCrypto;
-import io.github.theguy191919.udpft.protocol.Protocol;
-import io.github.theguy191919.udpft.protocol.Protocol3;
-import io.github.theguy191919.udpft.protocol.Protocol4;
+import io.github.theguy191919.udpft2.protocol.Protocol;
+import io.github.theguy191919.udpft2.protocol.ProtocolGoal;
+//import io.github.theguy191919.udpft.protocol.Protocol;
+//import io.github.theguy191919.udpft.protocol.Protocol3;
+//mport io.github.theguy191919.udpft.protocol.Protocol4;
 import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,15 +46,23 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/post")
     @ResponseBody
-    public byte[] roomPost(@RequestParam(value = "goal", required = false) String goal, @RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
+    public String roomPost(@RequestParam(value = "goal", required = false) String goal, @RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).addMessage(username, data.getBytes());
         } else {
-            Protocol error = new Protocol4();
-            error.setContent("No room found");
-            return error.returnByteArray();
+            Protocol error = new Protocol("Server", ProtocolGoal.POST, "No room found");
+            System.out.println("Owner: " + error.getOwnerName());
+            System.out.println("Goal: " + error.getGoal().toString());
+            System.out.println("Data: " + error.getData());
+            //error.setContent("No room found");
+            return error.toString();
         }
-        return new Protocol3().returnByteArray();
+        
+        Protocol reply = new Protocol("Server", ProtocolGoal.POST, "");
+        System.out.println("Owner: " + reply.getOwnerName());
+        System.out.println("Goal: " + reply.getGoal().toString());
+        System.out.println("Data: " + reply.getData());
+        return data.toString();
         //this.que.add(body);
     }
     
