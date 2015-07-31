@@ -5,6 +5,7 @@
  */
 package io.github.theguy191919.server.api.rooms;
 
+import io.github.theguy191919.udpft2.protocol.Protocol;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,11 +43,11 @@ public class ChatRoom implements Runnable{
         this.listOfUsers.add(new User(name));
     }
     
-    public void addMessage(String sender, byte[] message){
-        this.listOfMessages.add(new Message(message, sender));
+    public void addMessage(Protocol message){
+        this.listOfMessages.add(new Message(message));
     }
     
-    public void addRequest(String userName, DeferredResult<byte[]> request){
+    public void addRequest(String userName, DeferredResult<Protocol> request){
         System.out.println("New Request by " + userName);
         boolean foundUser = false;
         for(int a = 0; a < this.listOfUsers.size(); a++){

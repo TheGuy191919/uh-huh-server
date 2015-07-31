@@ -16,16 +16,16 @@ import java.util.TimeZone;
 public class Message implements Comparable{
     
     private long timeStemp;
-    private byte[] message;
-    private String sender;
+    private Protocol message;
+    //private String sender;
     
-    public Message(byte[] message, String sender){
-        this(message, sender, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
+    public Message(Protocol message){
+        this(message, Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis());
     }
     
-    public Message(byte[] message, String sender, long timeStemp){
+    public Message(Protocol message, long timeStemp){
         this.message = message;
-        this.sender = sender;
+        //this.sender = sender;
         this.timeStemp = timeStemp;
         //System.out.println("New Message");
     }
@@ -40,21 +40,21 @@ public class Message implements Comparable{
     /**
      * @return the message
      */
-    public byte[] getMessage() {
-        return message;
+    public String getMessage() {
+        return this.message.getData();
     }
     
     public String getSender(){
-        return this.sender;
+        return this.message.getOwnerName();
     }
     
     @Override
     public String toString(){
-        return this.timeStemp + "|" + this.message;
+        return this.timeStemp + "|" + this.message.toString();
     }
     
     public Protocol getProtocol(){
-        return new Protocol(this.sender);
+        return this.message;
     }
 
     @Override

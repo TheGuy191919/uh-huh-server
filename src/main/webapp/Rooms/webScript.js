@@ -33,8 +33,10 @@ function listen(){
     httpGet("./listen?username=" + username + "&random=" + Math.random(), function load() {
     var message = this.responseText;
     console.log(message);
-    if (message && message !== "") {
-        createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), message);
+    var jsonMessage = $.parseJSON(message);
+    if (message && message !== "" && jsonMessage.data != "") {
+        
+        createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), jsonMessage.ownerName + ": " + jsonMessage.data);
     }
     listen();
 }, function error() {
@@ -48,7 +50,7 @@ function listen(){
 }
 
 function post(message){
-    httpGet("./post?username=" + username + "&data=" + username + ": " + message + "&random=" + Math.random(), function load(){
+    httpGet("./post?username=" + username + "&goal=" + "POST" + "&data=" + message + "&random=" + Math.random(), function load(){
         console.log("Posted " + message);
     }, function error(){
         createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), "\"" + message + "\" failed to send");

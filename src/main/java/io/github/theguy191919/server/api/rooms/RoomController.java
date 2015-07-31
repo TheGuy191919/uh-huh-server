@@ -48,7 +48,7 @@ public class RoomController {
     @ResponseBody
     public String roomPost(@RequestParam(value = "goal", required = false) String goal, @RequestParam(value = "data", required = false) String data, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName, Model model){
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
-            this.mapOfRooms.get(roomName.hashCode()).addMessage(username, data.getBytes());
+            this.mapOfRooms.get(roomName.hashCode()).addMessage(new Protocol(username, ProtocolGoal.valueOf(goal), data));
         } else {
             Protocol error = new Protocol("Server", ProtocolGoal.POST, "No room found");
             System.out.println("Owner: " + error.getOwnerName());
@@ -68,20 +68,20 @@ public class RoomController {
     
     @RequestMapping(value="/{roomName}/info")//, consumes="text/plain")
     @ResponseBody
-    public byte[] roomInfo(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName, Model model){
+    public Protocol roomInfo(@RequestParam(value = "data", required = false) String data, @PathVariable String roomName){
         //saved for future api
-        System.out.println("Fuck " + roomName);
-        System.out.println("The request body: " + data);
-        System.out.println("The length of the message is: " + data);
-        System.out.println("Message is: " + new SimpleCrypto(roomName.hashCode()).decrypt(data));
-        model.addAttribute("name", "thing");
-        return data.getBytes();
+//        System.out.println("Fuck " + roomName);
+//        System.out.println("The request body: " + data);
+//        System.out.println("The length of the message is: " + data);
+//        System.out.println("Message is: " + new SimpleCrypto(roomName.hashCode()).decrypt(data));
+        //model.addAttribute("name", "thing");
+        return new Protocol("UserRandom", ProtocolGoal.POST, "This is a test");
     }
     
     @RequestMapping(value="/{roomName}/listen")
     @ResponseBody
-    public DeferredResult<byte[]> roomListen(@RequestBody(required = false) byte[] body, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName){
-        final DeferredResult<byte[]> result = new DeferredResult<>((long)60000, "No message sent in last 60 seconds".getBytes());
+    public DeferredResult<Protocol> roomListen(@RequestBody(required = false) byte[] body, @RequestParam(value = "username", required = false, defaultValue = "Random User") String username, @PathVariable String roomName){
+        final DeferredResult<Protocol> result = new DeferredResult<>((long)60000, new Protocol("server", ProtocolGoal.POST, ""));
         if(this.mapOfRooms.containsKey(roomName.hashCode())){
             this.mapOfRooms.get(roomName.hashCode()).addRequest(username, result); //be replaced with decodeed protocol username
         } else {

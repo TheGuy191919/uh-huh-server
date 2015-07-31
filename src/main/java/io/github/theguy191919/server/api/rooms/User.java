@@ -19,7 +19,7 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 public class User {
     
-    private DeferredResult<byte[]> request;
+    private DeferredResult<Protocol> request;
     //private long lastMessageTime = Long.MIN_VALUE;
     private LinkedBlockingDeque<Message> messageQue = new LinkedBlockingDeque<>();
     private String name;
@@ -27,13 +27,13 @@ public class User {
     
     public User(String name){
         this.name = name;
-        Message firstMessage = new Message(new Protocol("Server", ProtocolGoal.POST, "").toString().getBytes(), "Server");
+        Message firstMessage = new Message(new Protocol("Server", ProtocolGoal.POST, "Welcome to Uh-huh Server"));
         this.lastMessage = firstMessage;
         this.newMessage(firstMessage);
         //System.out.println("User " + name + "made");
     }
     
-    public User(String name, DeferredResult<byte[]> request){
+    public User(String name, DeferredResult<Protocol> request){
         this(name);
         this.request = request;
     }
@@ -55,7 +55,7 @@ public class User {
     /*
     Called by either controller or main thread to add to the request pool
     */
-    public void newRequest(DeferredResult<byte[]> request){
+    public void newRequest(DeferredResult<Protocol> request){
         //System.out.println("New Request");
         this.request = request;
         this.setResponse();
@@ -68,7 +68,7 @@ public class User {
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
                 Message message = this.messageQue.poll();
                 if(!message.getSender().equals(this.name)){
-                    this.request.setResult(message.getMessage());
+                    this.request.setResult(message.getProtocol());
                 }
                 //this.lastMessage = message;
             }
