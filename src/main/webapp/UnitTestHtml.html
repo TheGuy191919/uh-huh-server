@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <script>
+            function buttonFunction() {
+                console.log("Running1");
+                navigator.getUserMedia = navigator.getUserMedia ||
+                        navigator.mozGetUserMedia ||
+                        navigator.msGetUserMedia;
+                        
+                var video = document.querySelector('video');
+                if (navigator.getUserMedia) {
+                    console.log("Running2");
+                    navigator.getUserMedia({audio: true, video: true},
+                    function (stream) {
+
+                        console.log("Running3");
+                        video.src = window.URL.createObjectURL(stream);
+                        video.controls = true;
+                        console.log(Object.getOwnPropertyNames(stream));
+                        video.onloadedmetadata = function (e) {
+                            video.play();
+                        };
+                    },
+                            function (err) {
+                                console.log("The following error occured: " + err.name);
+                            }
+                    );
+                } else if (navigator.webkitGetUserMedia) {
+                    console.log("Running4");
+                    navigator.webkitGetUserMedia({video: true, aduio: true},
+                    function (stream) {
+                        console.log("Running5");
+                        video.src = window.URL.createObjectURL(stream);
+                        video.controls = true;
+                        console.log(Object.getOwnPropertyNames(stream));
+                    },
+                            function (err) {
+                                console.log("The following error occured webkit: " + err.name);
+                            });
+                } else {
+                    console.log("getUserMedia not supported");
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <video autoplay=""></video>
+        <button id="playButton" onclick="buttonFunction()">Play</button>
+
+    </body>
+</html>
