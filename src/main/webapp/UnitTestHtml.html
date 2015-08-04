@@ -7,21 +7,44 @@ and open the template in the editor.
 <html>
     <head>
         <script>
+
+            var rafId;
+            var frames = [];
+
+            function updateCanves() {
+                var canvas = document.querySelector('canvas');
+                var video = document.querySelector('video');
+                var CANVAS_WIDTH = canvas.width;
+                var CANVAS_HEIGHT = canvas.height;
+                rafId = requestAnimationFrame(updateCanves);
+                canvas.getContext("2d").drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                frames.push(canvas.toDataURL('image/webp', 1));
+            }
+
+            rafId = requestAnimationFrame(updateCanves);
+
             function buttonFunction() {
                 console.log("Running1");
                 navigator.getUserMedia = navigator.getUserMedia ||
-                        navigator.mozGetUserMedia ||
-                        navigator.msGetUserMedia;
-                        
+                        navigator.mozGetUserMedia;
+
                 var video = document.querySelector('video');
                 if (navigator.getUserMedia) {
                     console.log("Running2");
-                    navigator.getUserMedia({audio: true, video: true},
+                    navigator.getUserMedia({audio: true, video: {
+                            mandatory: {
+                                maxWidth: 640,
+                                maxHeight: 360
+                            }}},
                     function (stream) {
 
                         console.log("Running3");
                         video.src = window.URL.createObjectURL(stream);
                         video.controls = true;
+
+                        for (var element in stream.getTracks()[1]) {
+                            console.log(element);
+                        }
                         console.log(Object.getOwnPropertyNames(stream));
                         video.onloadedmetadata = function (e) {
                             video.play();
@@ -33,11 +56,14 @@ and open the template in the editor.
                     );
                 } else if (navigator.webkitGetUserMedia) {
                     console.log("Running4");
-                    navigator.webkitGetUserMedia({video: true, aduio: true},
-                    function (stream) {
+                    console.log(Object.getOwnPropertyNames(navigator.webkitGetUserMedia));
+                    navigator.webkitGetUserMedia({video: true}, function (stream) {
                         console.log("Running5");
                         video.src = window.URL.createObjectURL(stream);
                         video.controls = true;
+                        for (var element in stream) {
+                            console.log(element);
+                        }
                         console.log(Object.getOwnPropertyNames(stream));
                     },
                             function (err) {
@@ -52,6 +78,6 @@ and open the template in the editor.
     <body>
         <video autoplay=""></video>
         <button id="playButton" onclick="buttonFunction()">Play</button>
-
+        <canvas width="640" height="360"></canvas>
     </body>
 </html>
