@@ -68,7 +68,10 @@ public class User {
             if (!this.messageQue.isEmpty() && !this.request.isSetOrExpired()) {
                 Message message = this.messageQue.poll();
                 if(!message.getSender().equals(this.name)){
-                    this.request.setResult(message.getProtocol());
+                    if(!(message.getProtocol().getGoal() == ProtocolGoal.IMAGESET && (Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis() - message.getTimeStemp()) > 60000)){
+                        this.request.setResult(message.getProtocol());
+                    }
+                    
                 }
                 //this.lastMessage = message;
             }
