@@ -29,14 +29,55 @@ function httpGet(theUrl, loadFunc, errFunc) {
     //return xmlHttp.responseText;
 }
 
+//function httpPost(theUrl, keyvalue, loadFunc, errFunc) {
+//    //var xmlHttp = new XMLHttpRequest();
+//    var form = document.createElement("form");
+//    form.setAttribute("method", "post");
+//    form.setAttribute("action", path);
+//    //xmlHttp.open("GET", theUrl, true);
+//    //xmlHttp.onload = loadFunc;
+//    //xmlHttp.onerror = errFunc;
+//    //xmlHttp.send(null);
+//    //return xmlHttp.responseText;
+//}
+
+function httpPost(path, params) {
+    var method = "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function listen(){
     httpGet("./listen?username=" + username + "&random=" + Math.random(), function load() {
     var message = this.responseText;
     console.log(message);
     var jsonMessage = $.parseJSON(message);
     if (message && message !== "" && jsonMessage.data != "") {
+        if(jsonMessage.goal.toUpperCase() == "POST"){
+            createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), jsonMessage.ownerName + ": " + jsonMessage.data);
+        } else if(jsonMessage.goal.toUpperCase() == "IMAGEPOST"){
+            var userDrawer = getUser(jsonMessage.ownerName);
+            userDrawer.addToBuffer(JSON.parse(LZString.decompress()));
+        }
         
-        createRow((new Date()).getHours() + ":" + (new Date()).getMinutes(), jsonMessage.ownerName + ": " + jsonMessage.data);
     }
     listen();
 }, function error() {

@@ -8,6 +8,7 @@ var CamRecorder = function(video){
     this.updateCID;
     this.updateSVID;
     this.frames = [];
+    this.listener;
     
     this.vidCanvasSelf = document.createElement('canvas');
     this.vidSelf = video;
@@ -26,7 +27,15 @@ CamRecorder.prototype.updateCanvas = function() {
 
 //rafId = requestAnimationFrame(updateCanves);
 
+CamRecorder.prototype.onVideoEvent = function(func){
+    this.listener = func;
+};
+
 CamRecorder.prototype.getVideo = function() {
+    //for(a in $(this).frames){
+    //    console.log(a);
+    //}
+    console.log("Posting Video");
     var jsonFrames = JSON.stringify(this.frames);
     var compressedData = LZString.compress(jsonFrames);
 
@@ -39,7 +48,11 @@ CamRecorder.prototype.getVideo = function() {
     //addToBuffer(JSON.parse(jsonFrames));
 
     this.frames = [];
-    return compressedData;
+    //for(var elements in this.listener){
+    //    elements(compressedData);
+    //}
+    this.listener(compressedData);
+    //return compressedData;
 };
 
 CamRecorder.prototype.setUpVideo =  function() {
@@ -102,8 +115,18 @@ CamRecorder.prototype.setUpVideo =  function() {
 
 CamRecorder.prototype.start = function() {
     this.setUpVideo();
-    this.updateCID = setInterval(this.updateCanves, 4);
-    this.updateSVID = setInterval(this.getVideo, 100);
+    //this.updateCID = setInterval(this.updateCanvas, 4);
+    this.updateCID = setInterval((function(self){
+        return function(){
+            self.updateCanvas();
+        }
+    })(this), 4);
+    //this.updateSVID = setInterval(this.getVideo, 100);
+    this.updateSVID = setInterval((function(self){
+        return function(){
+            self.getVideo();
+        }
+    })(this), 100);
 };
 
 CamRecorder.prototype.stop = function() {

@@ -11,7 +11,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Testing</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="../../../Rooms/ImageDrawer.js" async></script>
+        <script src="../../../Rooms/lz-string.js" async></script>
+        <script src="../../../Rooms/CamRecorder.js" async></script>
         <script type="text/javascript">
+
             var roomName = "${roomName}";
             var username = "${username}";
         </script>
@@ -36,7 +40,14 @@
             </div>
         </div>
         <div id="rightDev">
-            <table>
+            <button onclick="startVideoCall()">Start Video Chat</button>
+            <table id="videoTabel">
+                <tr>
+                    <td>
+                        <p>Your Video</p>
+                        <video id='selfVideo' autoplay></video>
+                    </td>
+                </tr>
                 <tr>
                     <td>List of Users</td>
                 </tr>
@@ -44,6 +55,7 @@
         </div>
 
         <script>
+
             function getMessage() {
                 var message = document.getElementById("messageBox").value;
                 document.getElementById("messageBox").value = "";
@@ -60,6 +72,42 @@
                 }
                 return true;
             }
+
+            function startVideoCall() {
+                var recorder = new CamRecorder(document.getElementById("selfVideo"));
+                function func(compressedVideo) {
+                    var keyValuePair = {};
+                    keyValuePair.username = username;
+                    keyValuePair.goal = "IMAGESET";
+                    keyValuePair.data = compressedVideo;
+                    httpPost("./post", keyValuePair);
+                };
+                recorder.onVideoEvent(func);
+                recorder.start();
+            }
+
+            var arrayOfImageDrawer = [];
+
+            function getUser(username) {
+                for (imgDrawer in arrayOfImageDrawer) {
+                    if (imgDrawer.username == username) {
+                        return imgDrawer;
+                    }
+                }
+                var table = document.getElementById("videoTabel");
+                var row = table.insertRow(table.rows.length);
+                var cell1 = row.insertCell(0);
+                var nameElement = document.createElement("p");
+                nameElement.innerHTML = username;
+                var canvasElement = document.createElement("canvas");
+                cell1.appendChild(nameElement);
+                cell1.appendChild(canvasElement);
+                var newUser = new ImageDrawer(canvasElement);
+                newUser.username = username;
+                newUser.start();
+                return newUser;
+            }
+
         </script>
     </body>
 </html>
