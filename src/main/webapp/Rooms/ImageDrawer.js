@@ -11,6 +11,9 @@ var ImageDrawer = function(canvas){
 };
 
 ImageDrawer.prototype.addToBuffer = function(array) {
+    //console.log(array);
+    array = JSON.parse(array);
+    
     if (this.frameBuffer.length > 75) {
         this.frameBuffer = [];
     }
@@ -20,6 +23,7 @@ ImageDrawer.prototype.addToBuffer = function(array) {
         }
     }
     this.frameBuffer = this.frameBuffer.concat(array);
+    //console.log(this.frameBuffer);
 };
 
 ImageDrawer.prototype.drawFromBuffer = function() {
@@ -28,11 +32,13 @@ ImageDrawer.prototype.drawFromBuffer = function() {
     var CANVAS_WIDTH = canvas.width;
     var CANVAS_HEIGHT = canvas.height;
     if (this.frameBuffer.length >= 1 && typeof this.frameBuffer[0] !== 'undefined') {
+        //console.log("drawing");
         var image = new Image(64, 36);
         //var random = Math.random();
         //log("init: " + random);
         image.onload = function () {
             canvas.getContext("2d").drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            //console.log("image loaded");
             //log("load: " + random);
         };
         image.src = this.frameBuffer[0];
@@ -41,7 +47,12 @@ ImageDrawer.prototype.drawFromBuffer = function() {
 };
 
 ImageDrawer.prototype.start = function(){
-    this.taskID = setInterval(this.drawFromBuffer, 4);
+    //this.taskID = setInterval(this.drawFromBuffer, 4);
+    this.taskID = setInterval((function(self){
+        return function(){
+            self.drawFromBuffer();
+        };
+    })(this), 4);
 };
 
 ImageDrawer.prototype.stop = function(){

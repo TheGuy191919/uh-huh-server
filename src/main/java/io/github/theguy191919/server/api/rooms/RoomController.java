@@ -59,9 +59,9 @@ public class RoomController {
         }
         
         Protocol reply = new Protocol("Server", ProtocolGoal.POST, "");
-        System.out.println("Owner: " + reply.getOwnerName());
-        System.out.println("Goal: " + reply.getGoal().toString());
-        System.out.println("Data: " + reply.getData());
+        //System.out.println("Owner: " + reply.getOwnerName());
+        //System.out.println("Goal: " + reply.getGoal().toString());
+        //System.out.println("Data: " + reply.getData());
         return data.toString();
         //this.que.add(body);
     }

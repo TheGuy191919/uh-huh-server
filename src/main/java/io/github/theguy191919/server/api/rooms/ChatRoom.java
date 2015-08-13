@@ -48,7 +48,7 @@ public class ChatRoom implements Runnable{
     }
     
     public void addRequest(String userName, DeferredResult<Protocol> request){
-        System.out.println("New Request by " + userName);
+        //System.out.println("New Request by " + userName);
         boolean foundUser = false;
         for(int a = 0; a < this.listOfUsers.size(); a++){
             if(this.listOfUsers.get(a).getName().equals(userName)){

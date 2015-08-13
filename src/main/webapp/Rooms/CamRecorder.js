@@ -35,9 +35,9 @@ CamRecorder.prototype.getVideo = function() {
     //for(a in $(this).frames){
     //    console.log(a);
     //}
-    console.log("Posting Video");
+    //console.log("Posting Video");
     var jsonFrames = JSON.stringify(this.frames);
-    var compressedData = LZString.compress(jsonFrames);
+    var compressedData = LZString.compressToEncodedURIComponent(jsonFrames);
 
     //log("-----------------------------------------------------------");
     //log("Char Length: " + jsonFrames.length);
@@ -119,13 +119,13 @@ CamRecorder.prototype.start = function() {
     this.updateCID = setInterval((function(self){
         return function(){
             self.updateCanvas();
-        }
+        };
     })(this), 4);
     //this.updateSVID = setInterval(this.getVideo, 100);
     this.updateSVID = setInterval((function(self){
         return function(){
             self.getVideo();
-        }
+        };
     })(this), 100);
 };
 

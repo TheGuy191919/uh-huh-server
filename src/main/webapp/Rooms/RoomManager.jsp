@@ -75,14 +75,15 @@
 
             function startVideoCall() {
                 var recorder = new CamRecorder(document.getElementById("selfVideo"));
-                function func(compressedVideo) {
+                recorder.onVideoEvent(function (compressedVideo) {
                     var keyValuePair = {};
                     keyValuePair.username = username;
                     keyValuePair.goal = "IMAGESET";
                     keyValuePair.data = compressedVideo;
-                    httpPost("./post", keyValuePair);
-                };
-                recorder.onVideoEvent(func);
+                    httpPost("./post", keyValuePair, function (data, textStatus, jqXHR){
+                        
+                    });
+                });
                 recorder.start();
             }
 
@@ -90,8 +91,9 @@
 
             function getUser(username) {
                 for (imgDrawer in arrayOfImageDrawer) {
-                    if (imgDrawer.username == username) {
-                        return imgDrawer;
+                    if (arrayOfImageDrawer[imgDrawer].username == username) {
+                        //console.log("Found User");
+                        return arrayOfImageDrawer[imgDrawer];
                     }
                 }
                 var table = document.getElementById("videoTabel");
@@ -100,9 +102,11 @@
                 var nameElement = document.createElement("p");
                 nameElement.innerHTML = username;
                 var canvasElement = document.createElement("canvas");
+                //console.
                 cell1.appendChild(nameElement);
                 cell1.appendChild(canvasElement);
                 var newUser = new ImageDrawer(canvasElement);
+                arrayOfImageDrawer.push(newUser);
                 newUser.username = username;
                 newUser.start();
                 return newUser;
